@@ -1,12 +1,12 @@
 """
 Phiz Business API — FastAPI Webhook Server
 ============================================
-Recebe mensagens do Phiz via webhook e responde automaticamente "Funcionou".
+Recebe mensagens do Phiz via webhook e responde automaticamente com IA.
 
 Fluxo:
   1. Phiz envia POST /webhook/receiver  (robot:messages)
   2. Servidor valida assinatura HMAC-SHA256
-  3. Extrai remetente e envia "Funcionou" de volta via Business API
+  3. Extrai remetente e responde utilizando IA de volta via Business API
 """
 
 from __future__ import annotations
@@ -22,6 +22,8 @@ from typing import Any
 import httpx
 from dotenv import load_dotenv
 from fastapi import FastAPI, Header, HTTPException, Query, Request, Response
+
+from ai.main import ai_response
 
 # ── Configuração ────────────────────────────────────────────
 load_dotenv()  # carrega .env se existir
@@ -242,7 +244,7 @@ processed_message_ids: set[str] = set()
 
 
 async def handle_incoming_message(message: dict[str, Any]) -> None:
-    """Processa uma mensagem recebida e responde 'Funcionou'."""
+    """Processa uma mensagem recebida e responde com IA."""
     msg_id = message.get("id", "")
     sender = message.get("from", "")
     msg_type = message.get("type", "unknown")
@@ -265,10 +267,10 @@ async def handle_incoming_message(message: dict[str, Any]) -> None:
         sender, msg_type, body[:100],
     )
 
-    # ── Responde "Funcionou" ────────────────────────────────
+    # ── Responde com IA ────────────────────────────────
     try:
-        await send_message(to=sender, text="Funcionou")
-        logger.info("✅ Resposta 'Funcionou' enviada para %s", sender)
+        await send_message(to=sender, text=ai_response(sender, body))
+        logger.info("✅ Resposta foi enviada para %s", sender)
     except Exception as e:
         logger.error("❌ Falha ao responder para %s: %s", sender, e)
 
