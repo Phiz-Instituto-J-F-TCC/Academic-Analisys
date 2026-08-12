@@ -243,6 +243,7 @@ async def ai_response(user_id: str, user_input:str):
 
     if "error" in result:
         print(result["error"])
+        return result["error"]
     else:
         agent_name = result.get("agent_used", "Especialista")
         print(f"🤖 [{agent_name}]:\n")
@@ -260,6 +261,9 @@ async def ai_response(user_id: str, user_input:str):
         elif result.get("judge_error"):
             print(f"\n  ⚠️  Juiz indisponível: {result['judge_error']}")
             return final_response
+
+        # Fallback para casos como small_talk que não tem avaliação
+        return final_response
 
 
 if __name__ == "__main__":
