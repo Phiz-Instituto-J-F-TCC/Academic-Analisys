@@ -226,7 +226,7 @@ async def process_query(user_input: str, session_id: str, user_id: str) -> dict:
 # LOOP PRINCIPAL
 # ═══════════════════════════════════════════════════════════════════════════
 
-async def main(user_id: str, user_input:str):
+async def ai_response(user_id: str, user_input:str):
     """Loop principal do chatbot interativo."""
     global DB_CONN
 
@@ -267,4 +267,4 @@ if __name__ == "__main__":
     if not uid:
         print("❌ Erro: ID de usuário não pode ser vazio.")
         sys.exit(1)
-    asyncio.run(main(uid))
+    asyncio.run(ai_response(uid))
