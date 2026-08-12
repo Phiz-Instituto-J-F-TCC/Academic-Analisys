@@ -268,7 +268,7 @@ async def handle_incoming_message(message: dict[str, Any]) -> None:
     # ── Responde "Funcionou" ────────────────────────────────
     try:
         await send_message(to=sender, text="Funcionou")
-        logger.info("✅ Resposta 'Funcionou' enviada para %s", sender)
+        logger.info("✅ Resposta foi enviada para %s", sender)
     except Exception as e:
         logger.error("❌ Falha ao responder para %s: %s", sender, e)
 
