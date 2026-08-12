@@ -23,6 +23,11 @@ import httpx
 from dotenv import load_dotenv
 from fastapi import FastAPI, Header, HTTPException, Query, Request, Response
 
+import sys
+from pathlib import Path
+
+# Adiciona o diretório 'ai' ao sys.path para que os imports absolutos dentro de ai/main.py funcionem
+sys.path.insert(0, str(Path(__file__).parent / "ai"))
 from ai.main import ai_response
 
 # ── Configuração ────────────────────────────────────────────
@@ -269,7 +274,8 @@ async def handle_incoming_message(message: dict[str, Any]) -> None:
 
     # ── Responde com IA ────────────────────────────────
     try:
-        await send_message(to=sender, text=ai_response(sender, body))
+        response_text = await ai_response(sender, body)
+        await send_message(to=sender, text=response_text)
         logger.info("✅ Resposta foi enviada para %s", sender)
     except Exception as e:
         logger.error("❌ Falha ao responder para %s: %s", sender, e)
