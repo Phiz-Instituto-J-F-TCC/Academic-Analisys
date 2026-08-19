@@ -58,7 +58,7 @@ class JudgeEvaluation(BaseModel):
 # ---------------------------------------------------------------------------
 judge_agent = Agent(
     name="Juiz de Qualidade",
-    instructions=(PROMPTS_DIR / "judge.txt").read_text(encoding="utf-8"),
+    instructions=(PROMPTS_DIR / "Juiz.md").read_text(encoding="utf-8"),
     output_type=JudgeEvaluation,
-    model="gpt-4o-mini",
+    model="gpt-5.4",
 )

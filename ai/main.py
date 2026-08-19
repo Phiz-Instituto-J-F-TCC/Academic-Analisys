@@ -111,8 +111,9 @@ async def process_query(user_input: str, session_id: str, user_id: str) -> dict:
 
         router_input = (
             (f"MEMORY:\n{memory_text}\n\n") if memory_text else ""
+            + f"O numero_phiz do usuário atual é: {user_id}\n\n"
             + "Use a única fonte de verdade de persona abaixo para decidir se deve encaminhar a solicitação a um especialista.\n"
-            "Se a mensagem for small talk ou sobre identidade do assistente, encaminhe para o especialista de small talk.\n"
+            "Se a mensagem for small  talk ou sobre identidade do assistente, encaminhe para o especialista de small talk.\n"
             "Caso contrário, faça handoff para o especialista adequado.\n\n"
             f"PERSONA:\n{PERSONA_PROMPT}"
         )
