@@ -20,8 +20,8 @@ PROMPTS_DIR = Path(__file__).parent.parent / "prompts"
 # ---------------------------------------------------------------------------
 orchestrator_agent = Agent(
     name="Orquestrador de Resposta",
-    instructions=(PROMPTS_DIR / "orchestrator.txt").read_text(encoding="utf-8"),
-    model="gpt-4o-mini",
+    instructions=(PROMPTS_DIR / "Orquestrador.md").read_text(encoding="utf-8"),
+    model="gpt-5.4",
 )
 
 ORCHESTRATOR_PERSONA_PROMPT = PERSONA_PROMPT

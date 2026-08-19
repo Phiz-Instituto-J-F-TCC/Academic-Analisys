@@ -34,10 +34,10 @@ class GuardrailOutput(BaseModel):
 # Agente Guardrail — classifica a mensagem do usuário
 # ---------------------------------------------------------------------------
 guardrail_agent = Agent(
-    name="Guardrail de Meteorologia",
-    instructions=(PROMPTS_DIR / "guardrail.txt").read_text(encoding="utf-8"),
+    name="Guardrail",
+    instructions=(PROMPTS_DIR / "Guardrail.md").read_text(encoding="utf-8"),
     output_type=GuardrailOutput,
-    model="gpt-4o-mini",  # Modelo leve para classificação rápida
+    model="gpt-5-nano",  # Modelo leve para classificação rápida
 )
 
 
