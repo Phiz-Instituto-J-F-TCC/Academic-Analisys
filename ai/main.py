@@ -1,16 +1,17 @@
 """
-🌤️ Chatbot Multi-Agente de Meteorologia
-=========================================
+Chatbot Multi-Agente de Acompanhamento Acadêmico
+================================================
 
 Ponto de entrada principal e lógica do pipeline multi-agente.
 
 Arquitetura Multi-Agente:
 ─────────────────────────
-1. GUARDRAIL     → Valida se a pergunta é sobre meteorologia
+1. GUARDRAIL     → Valida se a pergunta é sobre o contexto acadêmico
 2. ROTEADOR      → Decide qual especialista deve responder
 3. ESPECIALISTA  → Responde usando ferramentas (tools) específicas
-   ├─ Previsão do Tempo (3 tools)
-   └─ Análise Climática (3 tools)
+    ├─ Aluno (notas e frequência)
+    ├─ Professor (relatórios acadêmicos)
+    └─ Coordenador (visões gerais acadêmicas)
 4. ORQUESTRADOR  → Humaniza a saída técnica do especialista
 5. JUIZ          → Avalia a qualidade da resposta humanizada
 
@@ -58,7 +59,7 @@ from agents import Agent, InputGuardrailTripwireTriggered, Runner
 
 from src.agents import (
     judge_agent,
-    meteorology_guardrail,
+    academic_guardrail,
     orchestrator_agent,
     router_agent,
     small_talk_specialist,
@@ -175,14 +176,14 @@ async def process_query(user_input: str, session_id: str, user_id: str) -> dict:
 
     except InputGuardrailTripwireTriggered:
         result["error"] = (
-            "⚠️  Desculpe, este chatbot é especializado em **meteorologia e clima**.\n"
-            "   Faça perguntas sobre previsão do tempo, condições climáticas,\n"
-            "   índices climáticos, mudanças climáticas, etc.\n\n"
+            "⚠️  Desculpe, este chatbot é especializado em acompanhamento acadêmico.\n"
+            "   Faça perguntas sobre notas, desempenho, frequência, avaliações\n"
+            "   e relatórios acadêmicos de alunos, professores ou turmas.\n\n"
             "   Exemplos:\n"
-            '   • "Como está o tempo em São Paulo?"\n'
-            '   • "Qual a previsão para os próximos 5 dias no Rio?"\n'
-            '   • "O que é El Niño e como afeta o Brasil?"\n'
-            '   • "Compare o clima de Curitiba entre 2000 e 2024"'
+            '   • "Quais são minhas notas e minha média por matéria?"\n'
+            '   • "Qual é minha porcentagem de frequência?"\n'
+            '   • "Mostre o relatório da turma em Matemática."\n'
+            '   • "Como está o desempenho de um aluno em uma matéria?"'
         )
         return result
 
