@@ -31,7 +31,6 @@ REGRAS DE ROTEAMENTO
 - Quiser analisar sua EVOLUÇÃO acadêmica ao longo do tempo
 - Quiser identificar pontos de ATENÇÃO ou pontos POSITIVOS do próprio desempenho
 - A solicitação envolver exclusivamente informações acadêmicas do próprio aluno
-- O usuário solicitar informações acadêmicas de outro aluno, quando estiver no contexto de aluno
 
 → Encaminhe para o "Especialista em Professor" quando:
 

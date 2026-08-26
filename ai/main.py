@@ -150,6 +150,7 @@ async def process_query(user_input: str, session_id: str, user_id: str) -> dict:
         result["specialist_used"] = specialist_result.last_agent.name
         result["specialist_response"] = specialist_output
 
+        print("   ⚙️ Especialista utilizado:", result["specialist_used"])
         print("   🧩 Orquestrador humanizando a resposta do especialista...")
 
         orchestrator_input = (
