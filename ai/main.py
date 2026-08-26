@@ -110,16 +110,21 @@ async def process_query(user_input: str, session_id: str, user_id: str) -> dict:
         except Exception:
             memory_text = ""
 
-        router_input = (
+        router_context = (
             (f"MEMORY:\n{memory_text}\n\n") if memory_text else ""
-            + f"O numero_phiz do usuário atual é: {user_id}\n\n"
-            + "Use a única fonte de verdade de persona abaixo para decidir se deve encaminhar a solicitação a um especialista.\n"
-            "Se a mensagem for small  talk ou sobre identidade do assistente, encaminhe para o especialista de small talk.\n"
+        ) + (
+            f"O numero_phiz do usuário atual é: {user_id}\n\n"
+            "Use a única fonte de verdade de persona abaixo para decidir se deve encaminhar a solicitação a um especialista.\n"
+            "Se a mensagem for small talk ou sobre identidade do assistente, encaminhe para o especialista de small talk.\n"
             "Caso contrário, faça handoff para o especialista adequado.\n\n"
             f"PERSONA:\n{PERSONA_PROMPT}"
         )
 
-        specialist_result = await Runner.run(router_agent, user_input, context=router_input)
+        router_message = (
+            f"IDENTIFICADOR DO USUÁRIO AUTENTICADO (numero_phiz): {user_id}\n\n"
+            f"PERGUNTA DO USUÁRIO:\n{user_input}"
+        )
+        specialist_result = await Runner.run(router_agent, router_message, context=router_context)
         specialist_output = specialist_result.final_output
         result["agent_used"] = specialist_result.last_agent.name
 
@@ -154,7 +159,7 @@ async def process_query(user_input: str, session_id: str, user_id: str) -> dict:
         print("   🧩 Orquestrador humanizando a resposta do especialista...")
 
         orchestrator_input = (
-            (f"MEMORY:\n{memory_text}\n\n") if memory_text else ""
+            ((f"MEMORY:\n{memory_text}\n\n") if memory_text else "")
             + "Use a persona consistente com o roteador para humanizar a resposta técnica do especialista.\n"
             f"PERSONA:\n{PERSONA_PROMPT}\n\n"
             "PERGUNTA DO USUÁRIO:\n"
