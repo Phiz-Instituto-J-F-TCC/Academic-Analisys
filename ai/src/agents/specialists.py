@@ -1,18 +1,20 @@
 """
-Agentes Especialistas — Previsão do Tempo e Análise Climática.
+Agentes Especialistas — Acompanhamento Acadêmico.
 
-Este módulo define dois agentes especialistas, cada um equipado com
-ferramentas (tools) específicas para seu domínio:
+Este módulo define agentes especialistas, cada um equipado com ferramentas
+(tools) específicas para seu perfil de usuário:
 
-1. Especialista em Previsão do Tempo:
-   - obter_clima_atual
-   - obter_previsao_tempo
-   - obter_alertas_meteorologicos
+1. Especialista em Small Talk:
+    - Responde saudações e perguntas sobre a identidade do assistente.
 
-2. Especialista em Análise Climática:
-   - obter_historico_climatico
-   - obter_indices_climaticos
-   - comparar_clima_periodos
+2. Especialista em Aluno:
+    - Consulta notas e frequência do próprio aluno.
+
+3. Especialista em Professor:
+    - Gera relatórios de turmas e alunos nas matérias lecionadas.
+
+4. Especialista em Coordenador:
+    - Gera relatórios acadêmicos e visões gerais de salas e alunos.
 """
 
 from pathlib import Path

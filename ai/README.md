@@ -1,6 +1,6 @@
-# 🌤️ Chatbot Multi-Agente de Meteorologia
+# Chatbot Multi-Agente de Acompanhamento Acadêmico
 
-Chatbot inteligente sobre meteorologia e climatologia construído com o **OpenAI Agents SDK**, demonstrando uma arquitetura multi-agente com 6 componentes especializados.
+Chatbot acadêmico construído com o **OpenAI Agents SDK**, demonstrando uma arquitetura multi-agente para acompanhamento de alunos, professores e coordenadores.
 
 ## 🏗️ Arquitetura
 
@@ -12,7 +12,7 @@ Chatbot inteligente sobre meteorologia e climatologia construído com o **OpenAI
                                   ▼
                     ┌──────────────────────────┐
                     │   🔒 GUARDRAIL           │
-                    │   Valida se é meteorologia│
+                    │ Valida o contexto acadêmico│
                     └────────────┬─────────────┘
                                  │ (se válido)
                                  ▼
@@ -24,9 +24,9 @@ Chatbot inteligente sobre meteorologia e climatologia construído com o **OpenAI
                                  │
                                  ▼
                     ┌──────────────────────────┐
-                    │   🌦️ ESPECIALISTA        │
-                    │   Usa ferramentas para   │
-                    │   gerar resposta técnica │
+                    │   🧩 ESPECIALISTAS       │
+                    │   Usam ferramentas para  │
+                    │   gerar dados acadêmicos  │
                     └────────────┬─────────────┘
                                  │
                                  ▼
@@ -36,9 +36,8 @@ Chatbot inteligente sobre meteorologia e climatologia construído com o **OpenAI
                     └──────┬─────────────┘
                            │           │
                     ┌──────▼──┐   ┌────▼───────┐
-                    │ 🌦️ Prev.│   │ 📊 Análise │
-                    │ do Tempo│   │  Climática  │
-                    │ (3 tools)│  │  (3 tools)  │
+                    │ 👨‍🎓 Aluno│   │ 👨‍🏫 Professor│
+                    │ (2 tools)│   │  (2 tools)  │
                     └──────┬──┘   └────┬───────┘
                            │           │
                            └─────┬─────┘
@@ -51,35 +50,43 @@ Chatbot inteligente sobre meteorologia e climatologia construído com o **OpenAI
 
 ## 📦 Componentes
 
-| Componente        | Arquivo                      | Descrição                                       |
-| ----------------- | ---------------------------- | ----------------------------------------------- |
-| **Guardrail**     | `src/agents/guardrail.py`    | Valida se a entrada é sobre meteorologia        |
-| **Orquestrador**  | `src/agents/orchestrator.py` | Humaniza a saída técnica do especialista        |
-| **Entry point**   | `main.py`                    | Inicia e coordena o pipeline de execução        |
-| **Roteador**      | `src/agents/router.py`       | Roteia para o especialista adequado via handoff |
-| **Esp. Previsão** | `src/agents/specialists.py`  | Previsão do tempo com 3 ferramentas             |
-| **Esp. Clima**    | `src/agents/specialists.py`  | Análise climática com 3 ferramentas             |
-| **Juiz**          | `src/agents/judge.py`        | Avalia qualidade da resposta (1-10)             |
+| Componente           | Arquivo                      | Descrição                                       |
+| -------------------- | ---------------------------- | ----------------------------------------------- |
+| **Guardrail**        | `src/agents/guardrail.py`    | Valida se a entrada é acadêmica                 |
+| **Orquestrador**     | `src/agents/orchestrator.py` | Humaniza a saída técnica do especialista        |
+| **Entry point**      | `main.py`                    | Inicia e coordena o pipeline de execução        |
+| **Roteador**         | `src/agents/router.py`       | Roteia para o especialista adequado via handoff |
+| **Esp. Aluno**       | `src/agents/specialists.py`  | Notas e frequência do aluno                     |
+| **Esp. Professor**   | `src/agents/specialists.py`  | Relatórios de matérias e alunos                 |
+| **Esp. Coordenador** | `src/agents/specialists.py`  | Relatórios e visões gerais acadêmicas           |
+| **Juiz**             | `src/agents/judge.py`        | Avalia qualidade da resposta (1-10)             |
 
 ## 🔧 Ferramentas (Tools)
 
-### Especialista em Previsão do Tempo
+### Especialista em Aluno
 
-| Ferramenta                             | Descrição                       |
-| -------------------------------------- | ------------------------------- |
-| `obter_clima_atual(cidade)`            | Condições meteorológicas atuais |
-| `obter_previsao_tempo(cidade, dias)`   | Previsão para os próximos dias  |
-| `obter_alertas_meteorologicos(regiao)` | Alertas do INMET ativos         |
+| Ferramenta                              | Descrição                                    |
+| --------------------------------------- | -------------------------------------------- |
+| `consultar_notas_aluno(numero_phiz)`    | Notas e médias gerais e por matéria          |
+| `consultar_presenca_aluno(numero_phiz)` | Presenças, faltas e percentual de frequência |
 
-### Especialista em Análise Climática
+### Especialista em Professor
 
-| Ferramenta                                             | Descrição                  |
-| ------------------------------------------------------ | -------------------------- |
-| `obter_historico_climatico(cidade, mes)`               | Dados históricos de clima  |
-| `obter_indices_climaticos(indice)`                     | El Niño, La Niña, IOD, AMO |
-| `comparar_clima_periodos(cidade, ano_inicio, ano_fim)` | Tendências entre períodos  |
+| Ferramenta                                                          | Descrição                            |
+| ------------------------------------------------------------------- | ------------------------------------ |
+| `relatorio_materia_professor(numero_phiz, sala, materia)`           | Relatório da turma em uma matéria    |
+| `relatorio_aluno_professor(numero_phiz, sala, materia, nome_aluno)` | Relatório de um aluno em uma matéria |
 
-> **Nota:** As ferramentas retornam dados simulados para demonstração. Em produção, substitua por APIs reais (OpenWeatherMap, INMET, CPTEC/INPE, etc.).
+### Especialista em Coordenador
+
+| Ferramenta                                                            | Descrição                                  |
+| --------------------------------------------------------------------- | ------------------------------------------ |
+| `relatorio_materia_coordenador(numero_phiz, sala, materia)`           | Relatório da turma em uma matéria          |
+| `relatorio_aluno_coordenador(numero_phiz, sala, materia, nome_aluno)` | Relatório de um aluno em uma matéria       |
+| `visao_geral_sala_coordenador(numero_phiz, id_sala)`                  | Visão geral da sala em todas as matérias   |
+| `visao_geral_aluno_coordenador(numero_phiz, nome_aluno)`              | Visão geral do aluno, com notas e presença |
+
+As ferramentas consultam a API definida por `PHIZLINK_API_URL`, cujo padrão é `http://localhost:8000`.
 
 ## 🚀 Como Usar
 
@@ -92,7 +99,7 @@ Chatbot inteligente sobre meteorologia e climatologia construído com o **OpenAI
 
 ```bash
 # Clone ou acesse o diretório do projeto
-cd TEMPLATE_BOM
+cd ai
 
 # Crie e ative um ambiente virtual (recomendado)
 python -m venv venv
@@ -122,21 +129,21 @@ python main.py
 ## 💬 Exemplos de Uso
 
 ```
-🧑 Você: Como está o tempo em São Paulo?
-   → Roteado para: Especialista em Previsão do Tempo
-   → Tools usadas: obter_clima_atual, obter_alertas_meteorologicos
+🧑 Você: Quais são minhas notas e minha média por matéria?
+   → Roteado para: Especialista Aluno
+   → Tools usadas: consultar_notas_aluno
 
-🧑 Você: Qual a previsão para os próximos 5 dias no Rio de Janeiro?
-   → Roteado para: Especialista em Previsão do Tempo
-   → Tools usadas: obter_previsao_tempo
+🧑 Você: Qual é minha porcentagem de frequência?
+   → Roteado para: Especialista Aluno
+   → Tools usadas: consultar_presenca_aluno
 
-🧑 Você: O que é El Niño e como afeta o Brasil?
-   → Roteado para: Especialista em Análise Climática
-   → Tools usadas: obter_indices_climaticos
+🧑 Você: Mostre o relatório da turma em Matemática.
+   → Roteado para: Especialista Professor ou Coordenador
+   → Tools usadas: relatorio_materia_professor ou relatorio_materia_coordenador
 
-🧑 Você: Compare o clima de Curitiba entre 2000 e 2024
-   → Roteado para: Especialista em Análise Climática
-   → Tools usadas: comparar_clima_periodos
+🧑 Você: Mostre a visão geral da sala.
+   → Roteado para: Especialista Coordenador
+   → Tools usadas: visao_geral_sala_coordenador
 
 🧑 Você: Me dê uma receita de bolo
    → Guardrail acionado! ⚠️ Tópico fora do escopo
@@ -145,7 +152,7 @@ python main.py
 ## 📁 Estrutura do Projeto
 
 ```
-TEMPLATE_BOM/
+ai/
 ├── .env.example          # Template para variáveis de ambiente
 ├── requirements.txt      # Dependências Python
 ├── README.md             # Documentação (este arquivo)
@@ -154,8 +161,10 @@ TEMPLATE_BOM/
     ├── __init__.py
     ├── tools/
     │   ├── __init__.py
-    │   ├── weather_tools.py   # 3 tools de previsão do tempo
-    │   └── climate_tools.py   # 3 tools de análise climática
+   │   ├── aluno_tools.py       # Notas e frequência
+   │   ├── professor_tools.py   # Relatórios do professor
+   │   ├── coordenador_tools.py # Relatórios do coordenador
+   │   └── geral_tools.py
     └── agents/
         ├── __init__.py
         ├── guardrail.py       # Guardrail de validação de tópico
@@ -166,7 +175,7 @@ TEMPLATE_BOM/
 
 ## 🔑 Conceitos Demonstrados
 
-- **Multi-Agent Systems**: Múltiplos agentes colaborando em pipeline
+- **Multi-Agent Systems**: Agentes especializados por perfil acadêmico
 - **Guardrails**: Validação de entrada com tripwire para segurança
 - **Handoffs**: Delegação de tarefas entre agentes especializados
 - **Function Tools**: Ferramentas que agentes chamam autonomamente
