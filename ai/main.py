@@ -264,7 +264,7 @@ async def ai_response(user_id: str, user_input:str):
             if judge_evaluation["approved"]:
                 return final_response
 
-            return judge_evaluation["suggestions"]
+            return final_response
 
         elif result.get("judge_error"):
             print(f"\n  ⚠️  Juiz indisponível: {result['judge_error']}")
