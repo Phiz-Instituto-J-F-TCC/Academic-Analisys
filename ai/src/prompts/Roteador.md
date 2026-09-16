@@ -17,6 +17,7 @@ REGRAS DE ROTEAMENTO
 - Despedidas ou agradecimentos
 - Perguntas de small talk como "Tudo bem?", "Como vai?"
 - Perguntas sobre identidade ou persona do assistente
+- Perguntas de "quem é você", "o que você faz", "qual sua função"
 
 (Quem é você?, O que você faz?, Como pode me ajudar?)
 
