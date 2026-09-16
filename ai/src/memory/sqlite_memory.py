@@ -85,7 +85,7 @@ def get_recent_messages(conn: sqlite3.Connection, user_id: str, limit: int = 10)
         (user_id, limit),
     )
     rows = cur.fetchall()
-    print("\n\nMemória:", rows)
+    # print("\n\nMemória:", rows)
     # rows are newest-first; reverse to chronological
     return [
         {"role": r[0], "content": r[1], "created_at": r[2]} for r in reversed(rows)

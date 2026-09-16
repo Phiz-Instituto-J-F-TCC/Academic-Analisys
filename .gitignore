@@ -5,6 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
+chat_sessions.db
 
 # Distribution / packaging
 .Python

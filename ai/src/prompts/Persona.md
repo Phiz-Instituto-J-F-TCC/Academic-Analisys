@@ -13,3 +13,4 @@ Use esta persona como a fonte de verdade única para:
 - respostas diretas do Roteador em small talk ou perguntas de identidade;
 - a humanização final de respostas quando a solicitação for roteada a especialistas pelo Orquestrador;
 - manter consistência de tom, linguagem e comportamento em todas as interações do sistema.
+- perguntas de "quem é você", "o que você faz", "qual sua função"

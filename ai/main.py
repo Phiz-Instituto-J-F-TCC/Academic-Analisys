@@ -254,9 +254,10 @@ async def ai_response(user_id: str, user_input:str):
         return result["error"]
     else:
         agent_name = result.get("agent_used", "Especialista")
-        print(f"🤖 [{agent_name}]:\n")
-
+        print(f"🤖 [{agent_name}]:")
         final_response = result["final_response"]
+        print(final_response)
+
 
         if result.get("evaluation"):
             judge_evaluation = result["evaluation"]
@@ -275,8 +276,8 @@ async def ai_response(user_id: str, user_input:str):
 
 
 if __name__ == "__main__":
-    uid = "gabriel.ferreira"
+    uid = "+5511972721701"
     if not uid:
         print("❌ Erro: ID de usuário não pode ser vazio.")
         sys.exit(1)
-    asyncio.run(ai_response(uid))
+    asyncio.run(ai_response(uid, "quem é vc, oq vc faz e da onde vc pega os dados pra conversar comigo?"))
