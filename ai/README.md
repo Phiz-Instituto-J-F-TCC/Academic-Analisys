@@ -85,6 +85,8 @@ Chatbot acadêmico construído com o **OpenAI Agents SDK**, demonstrando uma arq
 | `relatorio_aluno_coordenador(numero_phiz, sala, materia, nome_aluno)` | Relatório de um aluno em uma matéria       |
 | `visao_geral_sala_coordenador(numero_phiz, id_sala)`                  | Visão geral da sala em todas as matérias   |
 | `visao_geral_aluno_coordenador(numero_phiz, nome_aluno)`              | Visão geral do aluno, com notas e presença |
+| `visao_geral_alunos_coordenador(numero_phiz)`                         | Análise geral de todos os alunos           |
+| `visao_geral_serie_coordenador(numero_phiz, ano)`                     | Análise geral de uma série                 |
 
 As ferramentas consultam a API definida por `PHIZLINK_API_URL`, cujo padrão é `http://localhost:8000`.
 
