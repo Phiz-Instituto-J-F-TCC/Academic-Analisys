@@ -37,7 +37,9 @@ from src.tools.coordenador_tools import (
     relatorio_materia_coordenador,
     relatorio_aluno_coordenador,
     visao_geral_sala_coordenador,
-    visao_geral_aluno_coordenador
+    visao_geral_aluno_coordenador,
+    visao_geral_alunos_coordenador,
+    visao_geral_serie_coordenador
 )
 
 
@@ -79,6 +81,13 @@ professor_specialist = Agent(
 coordenador_specialist = Agent(
     name="Especialista_Coordenador",
     instructions=(PROMPTS_DIR / "Especialista_Coordenador.md").read_text(encoding="utf-8"),
-    tools=[relatorio_materia_coordenador, relatorio_aluno_coordenador, visao_geral_sala_coordenador, visao_geral_aluno_coordenador],
+    tools=[
+        relatorio_materia_coordenador,
+        relatorio_aluno_coordenador,
+        visao_geral_sala_coordenador,
+        visao_geral_aluno_coordenador,
+        visao_geral_alunos_coordenador,
+        visao_geral_serie_coordenador,
+    ],
     model="gpt-5.4",
 )

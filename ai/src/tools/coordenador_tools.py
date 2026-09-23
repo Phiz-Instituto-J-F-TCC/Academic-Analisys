@@ -82,3 +82,38 @@ def visao_geral_aluno_coordenador(numero_phiz: str, nome_aluno: str) -> str:
     except Exception as e:
         return json.dumps({"erro": str(e)}, ensure_ascii=False)
 
+
+@function_tool
+def visao_geral_alunos_coordenador(numero_phiz: str) -> str:
+    """Analisa todos os alunos em suas salas atuais.
+
+    Args:
+        numero_phiz: O número PhizLink do coordenador.
+    """
+    url = f"{API_BASE_URL}/coordenador/alunos/geral"
+    params = {"numero_phiz": numero_phiz}
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        return json.dumps(response.json(), ensure_ascii=False, indent=2)
+    except Exception as e:
+        return json.dumps({"erro": str(e)}, ensure_ascii=False)
+
+
+@function_tool
+def visao_geral_serie_coordenador(numero_phiz: str, ano: int) -> str:
+    """Analisa todas as salas e alunos de uma série atual.
+
+    Args:
+        numero_phiz: O número PhizLink do coordenador.
+        ano: O ano da série.
+    """
+    url = f"{API_BASE_URL}/coordenador/serie/geral"
+    params = {"numero_phiz": numero_phiz, "ano": ano}
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        return json.dumps(response.json(), ensure_ascii=False, indent=2)
+    except Exception as e:
+        return json.dumps({"erro": str(e)}, ensure_ascii=False)
+

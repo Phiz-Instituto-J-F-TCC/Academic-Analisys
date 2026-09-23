@@ -5,6 +5,8 @@ from .coordenador_tools import (
     relatorio_aluno_coordenador,
     visao_geral_sala_coordenador,
     visao_geral_aluno_coordenador,
+    visao_geral_alunos_coordenador,
+    visao_geral_serie_coordenador,
 )
 from .geral_tools import verificar_tipo_usuario
 
@@ -17,5 +19,7 @@ __all__ = [
     "relatorio_aluno_coordenador",
     "visao_geral_sala_coordenador",
     "visao_geral_aluno_coordenador",
+    "visao_geral_alunos_coordenador",
+    "visao_geral_serie_coordenador",
     "verificar_tipo_usuario",
 ]
