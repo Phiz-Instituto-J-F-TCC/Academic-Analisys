@@ -23,6 +23,25 @@ def relatorio_materia_coordenador(numero_phiz: str, sala: str, materia: str) -> 
     except Exception as e:
         return json.dumps({"erro": str(e)}, ensure_ascii=False)
 
+
+@function_tool
+def visao_geral_materia_coordenador(numero_phiz: str, materia: str) -> str:
+    """Resumo de uma matéria em todas as salas atuais que a oferecem.
+
+    Args:
+        numero_phiz: O número PhizLink do coordenador.
+        materia: A matéria a ser analisada em todas as salas.
+    """
+    url = f"{API_BASE_URL}/coordenador/materia/geral"
+    params = {"numero_phiz": numero_phiz, "materia": materia}
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        return json.dumps(response.json(), ensure_ascii=False, indent=2)
+    except Exception as e:
+        return json.dumps({"erro": str(e)}, ensure_ascii=False)
+
+
 @function_tool
 def relatorio_aluno_coordenador(numero_phiz: str, sala: str, materia: str, nome_aluno: str) -> str:
     """Relatório detalhado de um aluno em uma matéria. Sem verificação de vínculo.

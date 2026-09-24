@@ -35,6 +35,7 @@ from src.tools.professor_tools import (
 
 from src.tools.coordenador_tools import (
     relatorio_materia_coordenador,
+    visao_geral_materia_coordenador,
     relatorio_aluno_coordenador,
     visao_geral_sala_coordenador,
     visao_geral_aluno_coordenador,
@@ -83,6 +84,7 @@ coordenador_specialist = Agent(
     instructions=(PROMPTS_DIR / "Especialista_Coordenador.md").read_text(encoding="utf-8"),
     tools=[
         relatorio_materia_coordenador,
+        visao_geral_materia_coordenador,
         relatorio_aluno_coordenador,
         visao_geral_sala_coordenador,
         visao_geral_aluno_coordenador,
