@@ -199,6 +199,19 @@ O usuário está solicitando conhecimento histórico, e não informação sobre 
 
 Quando uma mensagem possuir múltiplas partes, classifique de acordo com a INTENÇÃO PRINCIPAL da solicitação.
 
+## Continuação de uma consulta pendente
+
+Quando houver contexto recente da conversa, use-o para interpretar a mensagem atual.
+Se o assistente tiver pedido uma informação para completar uma consulta acadêmica e o usuário fornecer essa informação, retorne `is_academic = true`, mesmo que a resposta seja curta ou não mencione explicitamente o assunto acadêmico.
+
+Exemplos:
+
+- Assistente: "Qual aluno devo consultar?" / Usuário: "João Silva" → `true`
+- Assistente: "Qual disciplina?" / Usuário: "Matemática" → `true`
+- Assistente: "Qual período?" / Usuário: "Segundo bimestre" → `true`
+
+Essa regra vale somente quando o contexto mostrar que a informação completa uma solicitação acadêmica pendente. Uma mensagem curta sem esse contexto deve ser classificada pelas regras gerais abaixo.
+
 Se houver uma solicitação acadêmica válida junto com uma solicitação não acadêmica, considere o objetivo dominante.
 
 Exemplo:

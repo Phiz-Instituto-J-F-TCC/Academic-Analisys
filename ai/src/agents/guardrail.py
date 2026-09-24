@@ -58,7 +58,22 @@ async def _academic_guardrail_fn(ctx, agent, input) -> GuardrailFunctionOutput:
         GuardrailFunctionOutput com tripwire_triggered=True se o tópico
         não for acadêmico.
     """
-    result = await Runner.run(guardrail_agent, input, context=ctx.context)
+    conversation_context = getattr(ctx, "context", None)
+    guardrail_input = input
+
+    if conversation_context:
+        guardrail_input = (
+            "CONTEXTO RECENTE DA CONVERSA:\n"
+            f"{conversation_context}\n\n"
+            "MENSAGEM ATUAL DO USUÁRIO:\n"
+            f"{input}"
+        )
+
+    result = await Runner.run(
+        guardrail_agent,
+        guardrail_input,
+        context=ctx.context,
+    )
     output: GuardrailOutput = result.final_output
 
     return GuardrailFunctionOutput(
