@@ -106,7 +106,7 @@ async def process_query(user_input: str, session_id: str, user_id: str) -> dict:
         memory_text = ""
         try:
             if DB_CONN:
-                memory_text = build_memory_context(DB_CONN, user_id, limit=6)
+                memory_text = build_memory_context(DB_CONN, user_id, limit=20)
         except Exception:
             memory_text = ""
 
@@ -280,4 +280,4 @@ if __name__ == "__main__":
     if not uid:
         print("❌ Erro: ID de usuário não pode ser vazio.")
         sys.exit(1)
-    asyncio.run(ai_response(uid, "quem é vc, oq vc faz e da onde vc pega os dados pra conversar comigo?"))
+    asyncio.run(ai_response(uid, "Melhor nota da turma"))

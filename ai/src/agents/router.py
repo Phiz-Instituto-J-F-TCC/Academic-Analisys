@@ -29,7 +29,7 @@ router_agent = Agent(
     handoffs=[small_talk_specialist,aluno_specialist, professor_specialist, coordenador_specialist],
     tools=[verificar_tipo_usuario],
     input_guardrails=[academic_guardrail],
-    model="gpt-5-nano",
+    model="gpt-6-luna",
 )
 
 ROUTER_PERSONA_PROMPT = PERSONA_PROMPT
