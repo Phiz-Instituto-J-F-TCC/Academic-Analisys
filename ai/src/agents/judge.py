@@ -60,5 +60,5 @@ judge_agent = Agent(
     name="Juiz de Qualidade",
     instructions=(PROMPTS_DIR / "Juiz.md").read_text(encoding="utf-8"),
     output_type=JudgeEvaluation,
-    model="gpt-5.4",
+    model="gpt-6.1-sol",
 )
