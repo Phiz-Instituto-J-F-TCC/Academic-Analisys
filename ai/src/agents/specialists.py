@@ -50,7 +50,7 @@ from src.tools.coordenador_tools import (
 small_talk_specialist = Agent(
     name="Especialista_Small_Talk",
     instructions=(PROMPTS_DIR / "Especialista_Small_Talk.md").read_text(encoding="utf-8"),
-    model="gpt-6-luna",
+    model="gpt-5.1",
 )
 
 
@@ -61,7 +61,7 @@ aluno_specialist = Agent(
     name="Especialista_Aluno",
     instructions=(PROMPTS_DIR / "Especialista_Aluno.md").read_text(encoding="utf-8"),
     tools=[consultar_notas_aluno, consultar_presenca_aluno],
-    model="gpt-6.1-sol",
+    model="gpt-5.4",
 )
 
 
@@ -72,7 +72,7 @@ professor_specialist = Agent(
     name="Especialista_Professor",
     instructions=(PROMPTS_DIR / "Especialista_Professor.md").read_text(encoding="utf-8"),
     tools=[relatorio_materia_professor, relatorio_aluno_professor],
-    model="gpt-6.1-sol",
+    model="gpt-5.4",
 )
 
 
@@ -91,5 +91,5 @@ coordenador_specialist = Agent(
         visao_geral_alunos_coordenador,
         visao_geral_serie_coordenador,
     ],
-    model="gpt-6.1-sol",
+    model="gpt-5.4",
 )
