@@ -29,11 +29,13 @@ from src.tools.aluno_tools import (
 )
 
 from src.tools.professor_tools import (
+    buscar_sala_materia,
     relatorio_materia_professor,
     relatorio_aluno_professor
 )
 
 from src.tools.coordenador_tools import (
+    buscar_todas_salas_materias,
     relatorio_materia_coordenador,
     visao_geral_materia_coordenador,
     relatorio_aluno_coordenador,
@@ -50,7 +52,7 @@ from src.tools.coordenador_tools import (
 small_talk_specialist = Agent(
     name="Especialista_Small_Talk",
     instructions=(PROMPTS_DIR / "Especialista_Small_Talk.md").read_text(encoding="utf-8"),
-    model="gpt-5.1",
+    model="gpt-6-luna",
 )
 
 
@@ -61,7 +63,7 @@ aluno_specialist = Agent(
     name="Especialista_Aluno",
     instructions=(PROMPTS_DIR / "Especialista_Aluno.md").read_text(encoding="utf-8"),
     tools=[consultar_notas_aluno, consultar_presenca_aluno],
-    model="gpt-5.4",
+    model="gpt-6.1-sol",
 )
 
 
@@ -71,8 +73,8 @@ aluno_specialist = Agent(
 professor_specialist = Agent(
     name="Especialista_Professor",
     instructions=(PROMPTS_DIR / "Especialista_Professor.md").read_text(encoding="utf-8"),
-    tools=[relatorio_materia_professor, relatorio_aluno_professor],
-    model="gpt-5.4",
+    tools=[buscar_sala_materia, relatorio_materia_professor, relatorio_aluno_professor],
+    model="gpt-6.1-sol",
 )
 
 
@@ -83,6 +85,7 @@ coordenador_specialist = Agent(
     name="Especialista_Coordenador",
     instructions=(PROMPTS_DIR / "Especialista_Coordenador.md").read_text(encoding="utf-8"),
     tools=[
+        buscar_todas_salas_materias,
         relatorio_materia_coordenador,
         visao_geral_materia_coordenador,
         relatorio_aluno_coordenador,
@@ -91,5 +94,5 @@ coordenador_specialist = Agent(
         visao_geral_alunos_coordenador,
         visao_geral_serie_coordenador,
     ],
-    model="gpt-5.4",
+    model="gpt-6.1-sol",
 )
