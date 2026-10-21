@@ -26,7 +26,7 @@ PROMPTS_DIR = Path(__file__).parent.parent / "prompts"
 router_agent = Agent(
     name="Roteador",
     instructions=(PROMPTS_DIR / "Roteador.md").read_text(encoding="utf-8"),
-    handoffs=[small_talk_specialist,aluno_specialist, professor_specialist, coordenador_specialist],
+    handoffs=[small_talk_specialist, aluno_specialist, professor_specialist, coordenador_specialist],
     tools=[verificar_tipo_usuario],
     input_guardrails=[academic_guardrail],
     model="gpt-6-luna",

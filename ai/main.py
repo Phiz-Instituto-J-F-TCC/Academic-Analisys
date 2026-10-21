@@ -90,40 +90,50 @@ async def process_query(user_input: str, session_id: str, user_id: str) -> dict:
     """
     result = {}
 
-    # Persist the user message (best-effort)
-    try:
-        if DB_CONN:
-            persist_message(DB_CONN, session_id, "user", user_input)
-    except Exception:
-        pass
-
     # ── Etapa 1: Pipeline principal (Guardrail → Roteador → Especialista → Orquestrador) ──
     try:
         print("   🔒 Guardrail verificando a mensagem...")
         print("   🔀 Roteando a intenção do usuário...")
 
-        # Build a short memory context (recent messages) and inject into prompts
+        # Constrói o histórico da conversa com mensagens passadas ANTES de persistir a mensagem atual
         memory_text = ""
         try:
             if DB_CONN:
-                memory_text = build_memory_context(DB_CONN, user_id, limit=20)
+                memory_text = build_memory_context(DB_CONN, user_id, limit=30)
         except Exception:
             memory_text = ""
 
+        # Persist the current user message (best-effort)
+        try:
+            if DB_CONN:
+                persist_message(DB_CONN, session_id, "user", user_input)
+        except Exception:
+            pass
+
         router_context = (
-            (f"MEMORY:\n{memory_text}\n\n") if memory_text else ""
-        ) + (
             f"O numero_phiz do usuário atual é: {user_id}\n\n"
+            "Dê alta relevância ao histórico de mensagens anteriores fornecido no input.\n"
             "Use a única fonte de verdade de persona abaixo para decidir se deve encaminhar a solicitação a um especialista.\n"
             "Se a mensagem for small talk ou sobre identidade do assistente, encaminhe para o especialista de small talk.\n"
-            "Caso contrário, faça handoff para o especialista adequado.\n\n"
+            "Caso contrário, faça handoff para o especialista adequado com base no tipo de usuário e na intenção expressa.\n\n"
             f"PERSONA:\n{PERSONA_PROMPT}"
         )
 
-        router_message = (
-            f"IDENTIFICADOR DO USUÁRIO AUTENTICADO (numero_phiz): {user_id}\n\n"
-            f"PERGUNTA DO USUÁRIO:\n{user_input}"
+        router_message = f"IDENTIFICADOR DO USUÁRIO AUTENTICADO (numero_phiz): {user_id}\n\n"
+        if memory_text:
+            router_message += (
+                "═══════════════════════════════════════════════════════════════════\n"
+                "HISTÓRICO DE MENSAGENS ANTERIORES DA CONVERSA:\n"
+                "Dê alta relevância e prioridade ao histórico abaixo. Use-o ativamente para entender o contexto, referências a matérias ou dados citados, pronomes, anáforas e perguntas contínuas (como 'quantas matérias eu preciso melhorar?', 'e em frequência?', 'qual foi minha pior nota?').\n"
+                "═══════════════════════════════════════════════════════════════════\n"
+                f"{memory_text}\n"
+                "═══════════════════════════════════════════════════════════════════\n\n"
+            )
+        router_message += (
+            "PERGUNTA ATUAL DO USUÁRIO:\n"
+            f"{user_input}"
         )
+
         specialist_result = await Runner.run(router_agent, router_message, context=router_context)
         specialist_output = specialist_result.final_output
         result["agent_used"] = specialist_result.last_agent.name
@@ -159,14 +169,26 @@ async def process_query(user_input: str, session_id: str, user_id: str) -> dict:
         print("   🧩 Orquestrador humanizando a resposta do especialista...")
 
         orchestrator_input = (
-            ((f"MEMORY:\n{memory_text}\n\n") if memory_text else "")
-            + "Use a persona consistente com o roteador para humanizar a resposta técnica do especialista.\n"
+            f"IDENTIFICADOR DO USUÁRIO: {user_id}\n\n"
+        )
+        if memory_text:
+            orchestrator_input += (
+                "═══════════════════════════════════════════════════════════════════\n"
+                "HISTÓRICO RECENTE DE MENSAGENS DA CONVERSA:\n"
+                f"{memory_text}\n"
+                "═══════════════════════════════════════════════════════════════════\n\n"
+            )
+        orchestrator_input += (
+            "DIRETRIZES DO ORQUESTRADOR:\n"
+            "- Dê alta relevância ao histórico da conversa acima para manter total coerência, responder follow-ups com fluidez e conectar a resposta atual ao que já foi discutido.\n"
+            "- Se a pergunta for sobre quantidade (ex.: 'quantas matérias preciso melhorar?', 'quantos alunos?'), responda com o número exato em destaque logo no início de maneira clara e objetiva.\n"
+            "- Use a persona consistente abaixo para humanizar a resposta técnica do especialista em português brasileiro acolhedor, claro e acessível.\n"
+            "- Jamais revele nomes ou detalhes de arquitetura de agentes, nem tools internas do sistema.\n"
+            "- Preserve os limites de segurança da persona: não preveja aprovação/reprovação nem emita julgamentos institucionais.\n\n"
             f"PERSONA:\n{PERSONA_PROMPT}\n\n"
-            "PERGUNTA DO USUÁRIO:\n"
+            "PERGUNTA ATUAL DO USUÁRIO:\n"
             f"{user_input}\n\n"
             "O texto abaixo é o resultado técnico gerado pelo especialista.\n"
-            "Sua tarefa é transformá-lo em uma resposta natural em português brasileiro,\n"
-            "clara e acessível, adequada para o usuário final e para avaliação do juiz.\n\n"
             f"RESPOSTA DO ESPECIALISTA:\n{specialist_output}"
         )
 
@@ -183,12 +205,13 @@ async def process_query(user_input: str, session_id: str, user_id: str) -> dict:
     except InputGuardrailTripwireTriggered:
         result["error"] = (
             "⚠️  Desculpe, este chatbot é especializado em acompanhamento acadêmico.\n"
-            "   Faça perguntas sobre notas, desempenho, frequência, avaliações\n"
-            "   e relatórios acadêmicos de alunos, professores ou turmas.\n\n"
+            "   Faça perguntas sobre notas, desempenho, frequência, avaliações,\n"
+            "   quantidades de matérias ou alunos, e relatórios acadêmicos.\n\n"
             "   Exemplos:\n"
             '   • "Quais são minhas notas e minha média por matéria?"\n'
+            '   • "Quantas matérias eu preciso melhorar?"\n'
+            '   • "Quantos alunos eu possuo na turma?"\n'
             '   • "Qual é minha porcentagem de frequência?"\n'
-            '   • "Mostre o relatório da turma em Matemática."\n'
             '   • "Como está o desempenho de um aluno em uma matéria?"'
         )
         return result

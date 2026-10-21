@@ -73,8 +73,28 @@ def persist_message(conn: sqlite3.Connection, session_id: str, role: str, conten
     conn.commit()
 
 
-def get_recent_messages(conn: sqlite3.Connection, user_id: str, limit: int = 10):
-    """Return a list of recent messages for the given user (across all sessions) in chronological order."""
+def get_conversation_history(conn: sqlite3.Connection, user_id: str, limit: int = 20):
+    """Retorna o histórico de conversas reais (usuário e assistente) em ordem cronológica."""
+    cur = conn.cursor()
+    cur.execute(
+        """SELECT m.role, m.content, m.created_at
+           FROM messages m
+           JOIN sessions s ON m.session_id = s.id
+           WHERE s.user_id = ? AND m.role IN ('user', 'assistant')
+           ORDER BY m.id DESC LIMIT ?""",
+        (user_id, limit),
+    )
+    rows = cur.fetchall()
+    return [
+        {"role": r[0], "content": r[1], "created_at": r[2]} for r in reversed(rows)
+    ]
+
+
+def get_recent_messages(conn: sqlite3.Connection, user_id: str, limit: int = 20, include_internal: bool = False):
+    """Retorna mensagens recentes do usuário em ordem cronológica."""
+    if not include_internal:
+        return get_conversation_history(conn, user_id, limit)
+
     cur = conn.cursor()
     cur.execute(
         """SELECT m.role, m.content, m.created_at
@@ -85,25 +105,23 @@ def get_recent_messages(conn: sqlite3.Connection, user_id: str, limit: int = 10)
         (user_id, limit),
     )
     rows = cur.fetchall()
-    # print("\n\nMemória:", rows)
-    # rows are newest-first; reverse to chronological
     return [
         {"role": r[0], "content": r[1], "created_at": r[2]} for r in reversed(rows)
     ]
 
 
-def build_memory_context(conn: sqlite3.Connection, user_id: str, limit: int = 6) -> str:
-    """Construct a compact memory text block from recent messages of the user.
+def build_memory_context(conn: sqlite3.Connection, user_id: str, limit: int = 20) -> str:
+    """Constrói um bloco contextual legível com as mensagens anteriores do usuário e do assistente.
 
-    This is intentionally simple: it concatenates the last N messages into
-    a short, line-based context that can be prepended to prompts.
+    Filtra ruídos técnicos internos (como JSON bruto do especialista ou saídas do juiz)
+    para fornecer apenas o diálogo real entre usuário e assistente.
     """
-    msgs = get_recent_messages(conn, user_id, limit)
+    msgs = get_conversation_history(conn, user_id, limit)
     if not msgs:
         return ""
     parts = []
     for m in msgs:
-        # keep single-line representation
-        content = m["content"].replace("\n", " ")
-        parts.append(f"{m['role'].upper()}: {content}")
-    return "\n".join(parts)
+        role_label = "Usuário" if m["role"] == "user" else "Assistente"
+        content = m["content"].strip()
+        parts.append(f"[{role_label}]: {content}")
+    return "\n\n".join(parts)

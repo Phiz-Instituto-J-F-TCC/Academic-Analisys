@@ -37,7 +37,7 @@ guardrail_agent = Agent(
     name="Guardrail",
     instructions=(PROMPTS_DIR / "Guardrail.md").read_text(encoding="utf-8"),
     output_type=GuardrailOutput,
-    model="gpt-6-luna",  # Modelo leve para classificação rápida
+    model="gpt-6-luna",  # Modelo rápido e leve para classificação de intenção
 )
 
 
@@ -59,15 +59,18 @@ async def _academic_guardrail_fn(ctx, agent, input) -> GuardrailFunctionOutput:
         não for acadêmico.
     """
     conversation_context = getattr(ctx, "context", None)
-    guardrail_input = input
+    input_str = str(input)
 
-    if conversation_context:
+    # Se o histórico já não estiver incorporado no próprio input, inclui o contexto
+    if conversation_context and "HISTÓRICO DE MENSAGENS ANTERIORES" not in input_str:
         guardrail_input = (
             "CONTEXTO RECENTE DA CONVERSA:\n"
             f"{conversation_context}\n\n"
             "MENSAGEM ATUAL DO USUÁRIO:\n"
             f"{input}"
         )
+    else:
+        guardrail_input = input_str
 
     result = await Runner.run(
         guardrail_agent,
