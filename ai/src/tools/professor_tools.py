@@ -6,6 +6,26 @@ from agents import function_tool
 API_BASE_URL = os.environ.get("PHIZLINK_API_URL", "http://localhost:8000")
 
 @function_tool
+def buscar_sala_materia(numero_phiz: str) -> str:
+    """Retorna todas as combinações de sala e matéria que o professor leciona atualmente.
+    
+    Deve ser chamada no início de qualquer análise para descobrir quais turmas/matérias
+    estão vinculadas ao professor. Se o professor possuir apenas uma sala-matéria, essa
+    combinação deve ser assumida automaticamente sem perguntar ao usuário.
+    
+    Args:
+        numero_phiz: O número PhizLink do professor.
+    """
+    url = f"{API_BASE_URL}/professor/salas-materias"
+    params = {"numero_phiz": numero_phiz}
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        return json.dumps(response.json(), ensure_ascii=False, indent=2)
+    except Exception as e:
+        return json.dumps({"erro": str(e)}, ensure_ascii=False)
+
+@function_tool
 def relatorio_materia_professor(numero_phiz: str, sala: str, materia: str) -> str:
     """Relatório geral de uma turma em uma matéria específica. Valida se o professor realmente leciona essa matéria nessa sala.
     

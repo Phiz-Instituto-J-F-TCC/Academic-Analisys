@@ -6,6 +6,27 @@ from agents import function_tool
 API_BASE_URL = os.environ.get("PHIZLINK_API_URL", "http://localhost:8000")
 
 @function_tool
+def buscar_todas_salas_materias(numero_phiz: str) -> str:
+    """Retorna todas as combinações de sala e matéria cadastradas na instituição.
+
+    Deve ser chamada antes de análises gerais para que o coordenador possa
+    realizar consultas abrangentes sem precisar especificar sala ou matéria,
+    evitando perguntas desnecessárias ao usuário.
+
+    Args:
+        numero_phiz: O número PhizLink do coordenador.
+    """
+    url = f"{API_BASE_URL}/coordenador/salas-materias"
+    params = {"numero_phiz": numero_phiz}
+    try:
+        response = requests.get(url, params=params)
+        response.raise_for_status()
+        return json.dumps(response.json(), ensure_ascii=False, indent=2)
+    except Exception as e:
+        return json.dumps({"erro": str(e)}, ensure_ascii=False)
+
+
+@function_tool
 def relatorio_materia_coordenador(numero_phiz: str, sala: str, materia: str) -> str:
     """Relatório geral de uma turma em uma matéria. Sem verificação de vínculo.
     
