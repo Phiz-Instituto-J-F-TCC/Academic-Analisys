@@ -26,6 +26,7 @@ Uso:
 
 import asyncio
 import os
+import re
 import sys
 from pathlib import Path
 
@@ -65,6 +66,32 @@ from src.agents import (
     small_talk_specialist,
 )
 from src.agents.persona import PERSONA_PROMPT
+
+
+# ═══════════════════════════════════════════════════════════════════════════
+# UTILITÁRIO: remove markdown da resposta final
+# ═══════════════════════════════════════════════════════════════════════════
+
+def strip_markdown(text: str) -> str:
+    """Remove marcações markdown comuns da string, retornando texto puro."""
+    # Blocos de código (```...```)
+    text = re.sub(r"```[\s\S]*?```", "", text)
+    # Código inline (`...`)
+    text = re.sub(r"`([^`]*)`", r"\1", text)
+    # Cabeçalhos (# ## ###)
+    text = re.sub(r"^#{1,6}\s+", "", text, flags=re.MULTILINE)
+    # Negrito e itálico (*** ** * ___  __ _)
+    text = re.sub(r"\*{1,3}([^*]+)\*{1,3}", r"\1", text)
+    text = re.sub(r"_{1,3}([^_]+)_{1,3}", r"\1", text)
+    # Linha horizontal (--- *** ___)
+    text = re.sub(r"^[-*_]{3,}\s*$", "", text, flags=re.MULTILINE)
+    # Links [texto](url) → texto
+    text = re.sub(r"\[([^\]]+)\]\([^)]*\)", r"\1", text)
+    # Imagens ![alt](url) → ''
+    text = re.sub(r"!\[[^\]]*\]\([^)]*\)", "", text)
+    # Linhas em branco extras (>2 seguidas)
+    text = re.sub(r"\n{3,}", "\n\n", text)
+    return text.strip()
 
 
 # ═══════════════════════════════════════════════════════════════════════════
@@ -148,7 +175,7 @@ async def process_query(user_input: str, session_id: str, user_id: str) -> dict:
         if specialist_result.last_agent is small_talk_specialist:
             # O especialista de small talk respondeu diretamente.
             print("   🧠 Small talk atendida diretamente pelo especialista de small talk.")
-            result["final_response"] = specialist_output
+            result["final_response"] = strip_markdown(specialist_output)
             result["specialist_response"] = specialist_output
             result["specialist_used"] = small_talk_specialist.name
             result["evaluation"] = None
@@ -193,7 +220,7 @@ async def process_query(user_input: str, session_id: str, user_id: str) -> dict:
         )
 
         orchestrator_result = await Runner.run(orchestrator_agent, orchestrator_input)
-        result["final_response"] = orchestrator_result.final_output
+        result["final_response"] = strip_markdown(orchestrator_result.final_output)
 
         # Persist humanized assistant output
         try:

@@ -19,3 +19,4 @@ REGRAS:
 FORMATO:
 • Responda em frases curtas, claras e amigáveis.
 • Mantenha consistência com a persona acolhedora e respeitosa.
+• NUNCA utilize markdown: sem asteriscos, sem cerquilhas, sem crases, sem underlines. Apenas texto puro.
